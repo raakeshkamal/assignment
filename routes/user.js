@@ -15,7 +15,8 @@ var User =mongoose.model('User',new Schema({
 	username:String,
 	password:String,
 	date_created:Date,
-	upgraded:Date
+	upgraded:Date,
+  uploads:[String]
 }));
 
 function newUser( password,username ) {

@@ -81,6 +81,7 @@ onFileUploadStart: function (file) {
   console.log(file.originalname + ' is starting ...')
 },
 onFileUploadComplete: function (file) {
+ 
   console.log(file.fieldname + ' uploaded to  ' + file.path)
   done=true;
 }
@@ -93,8 +94,7 @@ app.get('/upload',function(req,res){
     if (err) {
         throw err; 
     }       
-   
-        res.writeHeader(200, {"Content-Type": "text/html"});  
+      res.writeHeader(200, {"Content-Type": "text/html"});  
         res.write(html);  
         res.end();
 });
@@ -102,9 +102,27 @@ app.get('/upload',function(req,res){
 });
 
 app.post('/api/photo',function(req,res){
+  
   if(done==true){
     console.log(req.files);
-    res.end("File uploaded.");
+    debugger;
+          User.update({
+        username: req.query.username
+    }, {
+        $addToSet: {
+            uploads:req.files.userPhoto.name
+        }
+    }, function (err, num, raw) {
+        debugger;
+        if (err) console.log(err + ' num : ' + num + ' raw : ' + raw);
+        else {
+            res.send({
+                result: true,
+                data:raw
+            });
+        }
+    })
+   res.end("File uploaded.");
   }
 });
 
