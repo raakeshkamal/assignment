@@ -17,6 +17,12 @@ var auth = require('./routes/user');
 var app = express();
 var Token = mongoose.model('Token',mongoose.model('Token'));
 var User = mongoose.model('User',mongoose.model('User'));
+var user = new User({
+  username:null,
+  password:null,
+  date_created: new Date(),
+  upgraded:new Date()
+});;
 // --------- DB ----------
 var db=mongoose.connection;
 db.open('mongodb://localhost/test');
@@ -93,21 +99,21 @@ app.get('/upload',function(req,res){
      fs.readFile('./views/index.html', function (err, html) {
     if (err) {
         throw err; 
-    }       
+    }  
+    user=req.user;     
       res.writeHeader(200, {"Content-Type": "text/html"});  
         res.write(html);  
         res.end();
 });
       //res.sendfile("index.html");
 });
-
 app.post('/api/photo',function(req,res){
   
   if(done==true){
     console.log(req.files);
     debugger;
           User.update({
-        username: req.query.username
+        _id: user._id
     }, {
         $addToSet: {
             uploads:req.files.userPhoto.name
